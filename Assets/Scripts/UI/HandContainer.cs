@@ -11,44 +11,69 @@ namespace CCG.UI
         [Header("Parameters")]
         [SerializeField] private AnimationCurve handCurve;
         [SerializeField] private float angle;
+        [SerializeField] private Vector2 handSize;
 
         [Header("Debug")]
         [SerializeField] private List<CardBase> cards;
 
         public IReadOnlyList<CardBase> Cards => cards;
         
-        public async UniTask AddCardToHand(CardBase card)
+        public async UniTask AsyncAddCardToHand(CardBase card)
         {
             cards.Add(card);
 
             card.OnCardDestroy += OnCardDestroy;
 
-            await RecalculateCards();
+            await AsyncRecalculateCards();
         }
 
         private void OnCardDestroy(CardBase card)
         {
             cards.Remove(card);
-            UniTask.Create(RecalculateCards);
+            UniTask.Create(AsyncRecalculateCards);
+        }
+
+        public Vector3 GetCardPosInHand(CardBase card)
+        {
+            float segmentNormalizedPos = 1f / (cards.Count + 1);
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i] == card)
+                {
+                    float xNormalized = segmentNormalizedPos * (i + 1);
+                    return new Vector2(xNormalized * handSize.x, handCurve.Evaluate(xNormalized) * handSize.y);
+                }
+            }
+            
+            Debug.LogError($"[{nameof(HandContainer)}] Target card not contained in hand!");
+            return Vector3.zero;
         }
         
-        private async UniTask RecalculateCards()
+        public Vector3 GetCardEulerRotationInHand(CardBase card)
         {
-            var rectTransform = transform as RectTransform;
-            var size = rectTransform.sizeDelta;
-            
-            float segmentNormalizedPos = 1f / (cards.Count + 1);
             float segmentAngle = angle / (cards.Count + 1);
-
+            for (var i = 0; i < cards.Count; i++)
+            {
+                if (cards[i] == card)
+                {
+                    return Vector3.forward * -((segmentAngle * (i + 1)) - angle / 2);
+                }
+            }
+            
+            Debug.LogError($"[{nameof(HandContainer)}] Target card not contained in hand!");
+            return Vector3.zero;
+        }
+        
+        private async UniTask AsyncRecalculateCards()
+        {
             UniTask[] animations = new UniTask[cards.Count];
             
             for (var i = 0; i < cards.Count; i++)
             {
-                float xNormalized = segmentNormalizedPos * (i + 1);
-                Vector2 newPos = new Vector2(xNormalized * size.x, handCurve.Evaluate(xNormalized) * size.y);
-                Vector3 newRotation = Vector3.forward * -((segmentAngle * (i + 1)) - angle / 2);
+                Vector2 newPos = GetCardPosInHand(cards[i]);
+                Vector3 newRotation = GetCardEulerRotationInHand(cards[i]);
 
-                animations[i] = cards[i].MoveCard(newPos, newRotation);
+                animations[i] = cards[i].AsyncMoveCard(newPos, newRotation);
             }
 
             await UniTask.WhenAll(animations);

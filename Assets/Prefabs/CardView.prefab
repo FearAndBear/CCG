@@ -1428,7 +1428,7 @@ MonoBehaviour:
     Duration: 1
     Target: {fileID: 8359150990356382901}
     RescaleValue: {x: 1.2, y: 1.2, z: 1}
-    MoveHeight: 120
+    MoveHeight: 230
     TargetCanvasGroup: {fileID: 1513109453880637160}
   cardMoveAnimationParameters:
     Duration: 1
@@ -1440,11 +1440,6 @@ MonoBehaviour:
     Target: {fileID: 8359150990356382901}
     PrevRotation: {x: 0, y: 0, z: 0}
     TargetRotation: {x: 0, y: 0, z: 0}
-  selectCardAnimationParameters:
-    Duration: 0.8
-    Target: {fileID: 6829918962256600702}
-    RescaleValue: {x: 1.2, y: 1.2, z: 0}
-    MoveHeight: 70
   costCounterAnimationParameters:
     Duration: 1
     StartValue: 1
@@ -1460,6 +1455,7 @@ MonoBehaviour:
     StartValue: 0
     EndValue: 0
     TargetText: {fileID: 8567846691071879138}
+  selectAnimationHeight: 230
 --- !u!114 &4706809717541068931
 MonoBehaviour:
   m_ObjectHideFlags: 0

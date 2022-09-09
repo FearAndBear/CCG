@@ -5,6 +5,6 @@ namespace CCG.Animations
     public interface IAnimation
     {
         bool IsPlaying { get; }
-        UniTask StartAnimation(bool isReverse = false);
+        UniTask AsyncStartAnimation(bool isReverse = false);
     }
 }

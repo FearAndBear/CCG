@@ -16,28 +16,33 @@ namespace CCG.UI
         public void StartRandomizingStats()
         {
             if (!_inProcess)
-                UniTask.Create(RandomizeStatsOnAllCards);
+                UniTask.Create(AsyncRandomizeStats);
         }
         
-        private async UniTask RandomizeStatsOnAllCards()
+        private async UniTask AsyncRandomizeStats()
         {
             _inProcess = true;
-            for (var i = 0; i < _handContainer.Cards.Count; i++)
+            while (_handContainer.Cards.Count > 0)
             {
-                var card = _handContainer.Cards[i];
-                var cardStat = (CardStat)Random.Range(0, 3);
-                int newValue = Random.Range(-2, 10);
-
-                await card.View.StartSelectAnimation();
-                await card.ChangeStat(cardStat, newValue);
-                await card.View.StartSelectAnimation(true);
-
-                if (cardStat == CardStat.Health && newValue <= 0)
+                for (var i = 0; i < _handContainer.Cards.Count; i++)
                 {
-                    await card.Destroy();
-                    i--;
+                    var card = _handContainer.Cards[i];
+                    var cardStat = CardStat.Health; //(CardStat)Random.Range(0, 3);
+                    int newValue = Random.Range(-2, 10);
+
+                    await card.AsyncSetSelectState(true);
+                    await card.AsyncChangeStat(cardStat, newValue);
+                    await UniTask.Delay(300);
+                    await card.AsyncSetSelectState(false);
+
+                    if (cardStat == CardStat.Health && newValue <= 0)
+                    {
+                        await card.AsyncDestroy();
+                        i--;
+                    }
                 }
             }
+
             _inProcess = false;
         }
     }

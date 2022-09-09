@@ -17,7 +17,7 @@ namespace CCG.Animations
     {
         public AnchoredMoveAnimation(CardMoveAnimationParameters @params) : base(@params) { }
 
-        public override UniTask StartAnimation(bool isReverse = false)
+        public override async UniTask AsyncStartAnimation(bool isReverse = false)
         {
             if (CurrentAnimation != null && CurrentAnimation.IsPlaying())
                 CurrentAnimation.Pause();
@@ -32,7 +32,7 @@ namespace CCG.Animations
             
             CurrentAnimation.Play();
             
-            return UniTask.WaitWhile(CurrentAnimation.IsPlaying);
+            await UniTask.WaitWhile(CurrentAnimation.IsPlaying);
         }
     }
 }

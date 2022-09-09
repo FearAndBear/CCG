@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace CCG.UI
 {
@@ -39,7 +40,9 @@ namespace CCG.UI
         [SerializeField] private CounterAnimationParameters healthCounterAnimationParameters;
         [SerializeField] private CounterAnimationParameters damageCounterAnimationParameters;
 
-        
+        [Space] 
+        [SerializeField] private float selectAnimationHeight = 230;
+
         private DestroyCardAnimation destroyCardAnimation;
         private AnchoredMoveAnimation _anchoredMoveAnimation;
         private LocalRotateAnimation _localRotateAnimation;
@@ -47,8 +50,6 @@ namespace CCG.UI
         private CounterAnimation costCounterAnimation;
         private CounterAnimation healthCounterAnimation;
         private CounterAnimation damageCounterAnimation;
-
-        private int _cacheRotation;
 
         public void Init(CardData data)
         {
@@ -67,14 +68,14 @@ namespace CCG.UI
             descriptionText.text = data.Description;
         }
 
-        public async UniTask StartDestroyAnimation(bool isReverse = false)
+        public async UniTask AsyncStartDestroyAnimation(bool isReverse = false)
         {
             canvas.sortingOrder = isReverse ? transform.GetSiblingIndex() : 10;
 
-            await destroyCardAnimation.StartAnimation();
+            await destroyCardAnimation.AsyncStartAnimation();
         }
         
-        public async UniTask StartUpdateStatAnimation(CardStat stat, int newValue, int oldValue)
+        public async UniTask AsyncStartUpdateStatAnimation(CardStat stat, int newValue, int oldValue)
         {
             CounterAnimation targetAnimation = null;
             switch (stat)
@@ -97,37 +98,38 @@ namespace CCG.UI
             targetAnimation.Params.StartValue = oldValue;
             targetAnimation.Params.EndValue = newValue;
             
-            await targetAnimation.StartAnimation();
+            await targetAnimation.AsyncStartAnimation();
         }
 
-        public async UniTask StartMoveAnimation(Vector3 newPosition)
+        public async UniTask AsyncStartMoveAnimation(Vector3 newPosition)
         {
             var moveAnimationTarget = _anchoredMoveAnimation.Params.Target.transform as RectTransform;
             _anchoredMoveAnimation.Params.PrevPosition = moveAnimationTarget.anchoredPosition;
             _anchoredMoveAnimation.Params.TargetPosition = newPosition;
             
-            await _anchoredMoveAnimation.StartAnimation();
+            await _anchoredMoveAnimation.AsyncStartAnimation();
         }
 
-        public async UniTask StartLocalRotationAnimation(Vector3 newRotation)
+        public async UniTask AsyncStartLocalRotationAnimation(Vector3 newRotation)
         {
             var rotateAnimationTarget = _localRotateAnimation.Params.Target.transform as RectTransform;
             _localRotateAnimation.Params.PrevRotation = rotateAnimationTarget.localEulerAngles;
             _localRotateAnimation.Params.TargetRotation = newRotation;
             
-            await _localRotateAnimation.StartAnimation();
+            await _localRotateAnimation.AsyncStartAnimation();
         }
 
-        public async UniTask StartSelectAnimation(bool isReverse = false)
+        public async UniTask AsyncStartSelectAnimation(Vector2 anchoredPosInHand, Vector3 rotationInHand, bool isReverse = false)
         {
-            if (!isReverse)
-                _cacheRotation = (int)transform.localEulerAngles.z;
+            var newPos = isReverse ? 
+                anchoredPosInHand : 
+                anchoredPosInHand + Vector2.up * selectAnimationHeight;
             
-            var rectTransform = transform as RectTransform;
-            var newPos = isReverse ? rectTransform.anchoredPosition - Vector2.up * 230 : rectTransform.anchoredPosition + Vector2.up * 230;
-            var newRotation = isReverse ? _cacheRotation : 0;
+            var newRotation = isReverse ? rotationInHand : Vector3.zero;
 
-            await UniTask.WhenAll(StartMoveAnimation(newPos), StartLocalRotationAnimation(newRotation * Vector3.forward));
+            await UniTask.WhenAll(
+                AsyncStartMoveAnimation(newPos), 
+                AsyncStartLocalRotationAnimation(newRotation));
         }
         
         private void InitAnimation()

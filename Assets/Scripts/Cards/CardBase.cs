@@ -2,6 +2,7 @@
 using CCG.UI;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 namespace CCG.Cards
 {
@@ -13,12 +14,13 @@ namespace CCG.Cards
         
         [Header("Optional parameters")]
         [SerializeField] private CardDataObject cardDataObject;
-        
+
+        [Inject] private HandContainer _handContainer;
+
         private CardData _data;
 
-        public CardBaseView View => view;
         public CardData Data => _data;
-                
+
         private void Awake()
         {
             if (cardDataObject) Init(cardDataObject.CardData);
@@ -30,14 +32,14 @@ namespace CCG.Cards
             view.Init(_data);
         }
 
-        public async UniTask MoveCard(Vector3 newPos, Vector3 newRotation)
+        public async UniTask AsyncMoveCard(Vector3 newPos, Vector3 newRotation)
         {
             await UniTask.WhenAll(
-                View.StartMoveAnimation(newPos), 
-                View.StartLocalRotationAnimation(newRotation));
+                view.AsyncStartMoveAnimation(newPos), 
+                view.AsyncStartLocalRotationAnimation(newRotation));
         }
 
-        public async UniTask ChangeStat(CardStat stat, int value)
+        public async UniTask AsyncChangeStat(CardStat stat, int value)
         {
             int oldValue = 0;
             switch (stat)
@@ -58,14 +60,20 @@ namespace CCG.Cards
                     break;
             }
 
-            await view.StartUpdateStatAnimation(stat, value, oldValue);
+            await view.AsyncStartUpdateStatAnimation(stat, value, oldValue);
         }
 
-        public async UniTask Destroy()
+        public async UniTask AsyncSetSelectState(bool isSelect)
         {
-            await view.StartDestroyAnimation();
-            OnCardDestroy?.Invoke(this);
+            var pos = _handContainer.GetCardPosInHand(this);
+            var rotation = _handContainer.GetCardEulerRotationInHand(this);
+            await view.AsyncStartSelectAnimation(pos, rotation, !isSelect);
+        }
 
+        public async UniTask AsyncDestroy()
+        {
+            await view.AsyncStartDestroyAnimation();
+            OnCardDestroy?.Invoke(this);
             Destroy(gameObject);
         }
     }

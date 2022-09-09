@@ -22,6 +22,6 @@ namespace CCG.Animations
 
         public abstract bool IsPlaying { get; }
 
-        public abstract UniTask StartAnimation(bool isReverse = false);
+        public abstract UniTask AsyncStartAnimation(bool isReverse = false);
     }
 }

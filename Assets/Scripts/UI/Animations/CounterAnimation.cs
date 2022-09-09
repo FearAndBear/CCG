@@ -22,7 +22,7 @@ namespace CCG.Animations
         
         public CounterAnimation(CounterAnimationParameters @params) : base(@params) { }
         
-        public override async UniTask StartAnimation(bool isReverse = false)
+        public override async UniTask AsyncStartAnimation(bool isReverse = false)
         {
             _isPlaying = true;
             int startValue = isReverse ? Params.EndValue : Params.StartValue;
@@ -37,8 +37,8 @@ namespace CCG.Animations
             {
                 currentValue = (int)Mathf.Lerp(startValue, endValue, timeLeft / Params.Duration);
                 Params.TargetText.text = currentValue.ToString();
-                await UniTask.Delay((int)(Time.deltaTime * 100));
                 timeLeft += Time.deltaTime;
+                await UniTask.Yield();
             }
 
             _isPlaying = true;

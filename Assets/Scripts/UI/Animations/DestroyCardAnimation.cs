@@ -19,7 +19,7 @@ namespace CCG.Animations
     {
         public DestroyCardAnimation(DestroyCardAnimationParameters @params) : base(@params) { }
 
-        public override async UniTask StartAnimation( bool isReverse = false)
+        public override async UniTask AsyncStartAnimation( bool isReverse = false)
         {
             if (CurrentAnimation != null && CurrentAnimation.IsPlaying())
                 CurrentAnimation.Pause();
