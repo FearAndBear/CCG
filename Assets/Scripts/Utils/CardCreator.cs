@@ -32,10 +32,10 @@ namespace Utils
             {
                 var newCard = Instantiate(prefab, transform);
                 _container.Inject(newCard);
-                newCard.Init(cardDataObjects[Random.Range(0, cardDataObjects.Length)].CardData.Clone());
-
                 RectTransform rectTransform = newCard.transform as RectTransform;
                 rectTransform.anchoredPosition = new Vector2(1000, 100);
+                
+                await newCard.Init(cardDataObjects[Random.Range(0, cardDataObjects.Length)].CardData.Clone());
 
                 animations.Add(_handContainer.AsyncAddCardToHand(newCard));
                 await UniTask.Delay(200);

@@ -1,9 +1,7 @@
-﻿using System;
-using CCG.Cards;
+﻿using CCG.Cards;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace CCG.UI
 {
@@ -27,7 +25,7 @@ namespace CCG.UI
                 for (var i = 0; i < _handContainer.Cards.Count; i++)
                 {
                     var card = _handContainer.Cards[i];
-                    var cardStat = CardStat.Health; //(CardStat)Random.Range(0, 3);
+                    var cardStat = (CardStat)Random.Range(0, 3);
                     int newValue = Random.Range(-2, 10);
 
                     await card.AsyncSetSelectState(true);

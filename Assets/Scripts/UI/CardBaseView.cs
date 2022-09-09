@@ -43,18 +43,16 @@ namespace CCG.UI
         [Space] 
         [SerializeField] private float selectAnimationHeight = 230;
 
-        private DestroyCardAnimation destroyCardAnimation;
+        private DestroyCardAnimation _destroyCardAnimation;
         private AnchoredMoveAnimation _anchoredMoveAnimation;
         private LocalRotateAnimation _localRotateAnimation;
 
-        private CounterAnimation costCounterAnimation;
-        private CounterAnimation healthCounterAnimation;
-        private CounterAnimation damageCounterAnimation;
+        private CounterAnimation _costCounterAnimation;
+        private CounterAnimation _healthCounterAnimation;
+        private CounterAnimation _damageCounterAnimation;
 
-        public void Init(CardData data)
+        public async UniTask AsyncInit(CardData data)
         {
-            // Add loading image from server.
-
             highlightCanvasGroup.alpha = 0;
             canvas.sortingOrder = transform.GetSiblingIndex();
             
@@ -66,13 +64,17 @@ namespace CCG.UI
 
             titleText.text = data.Title;
             descriptionText.text = data.Description;
+
+            var sprite = await data.GetSprite();
+
+            artImage.sprite = sprite;
         }
 
         public async UniTask AsyncStartDestroyAnimation(bool isReverse = false)
         {
             canvas.sortingOrder = isReverse ? transform.GetSiblingIndex() : 10;
 
-            await destroyCardAnimation.AsyncStartAnimation();
+            await _destroyCardAnimation.AsyncStartAnimation();
         }
         
         public async UniTask AsyncStartUpdateStatAnimation(CardStat stat, int newValue, int oldValue)
@@ -81,15 +83,15 @@ namespace CCG.UI
             switch (stat)
             {
                 case CardStat.Cost:
-                    targetAnimation = costCounterAnimation;
+                    targetAnimation = _costCounterAnimation;
                     break;
                 
                 case CardStat.Health:
-                    targetAnimation = healthCounterAnimation;
+                    targetAnimation = _healthCounterAnimation;
                     break;
 
                 case CardStat.Damage:
-                    targetAnimation = damageCounterAnimation;
+                    targetAnimation = _damageCounterAnimation;
                     break;
             }
 
@@ -134,13 +136,13 @@ namespace CCG.UI
         
         private void InitAnimation()
         {
-            destroyCardAnimation = new DestroyCardAnimation(destroyCardAnimationParameters);
+            _destroyCardAnimation = new DestroyCardAnimation(destroyCardAnimationParameters);
             _anchoredMoveAnimation = new AnchoredMoveAnimation(cardMoveAnimationParameters);
             _localRotateAnimation = new LocalRotateAnimation(rotateAnimationParameters);
 
-            costCounterAnimation = new CounterAnimation(costCounterAnimationParameters);
-            healthCounterAnimation = new CounterAnimation(healthCounterAnimationParameters);
-            damageCounterAnimation = new CounterAnimation(damageCounterAnimationParameters);
+            _costCounterAnimation = new CounterAnimation(costCounterAnimationParameters);
+            _healthCounterAnimation = new CounterAnimation(healthCounterAnimationParameters);
+            _damageCounterAnimation = new CounterAnimation(damageCounterAnimationParameters);
         }
     }
 }

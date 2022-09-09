@@ -23,13 +23,13 @@ namespace CCG.Cards
 
         private void Awake()
         {
-            if (cardDataObject) Init(cardDataObject.CardData);
+            if (cardDataObject) UniTask.Create(() => Init(cardDataObject.CardData));
         }
 
-        public void Init(CardData data)
+        public async UniTask Init(CardData data)
         {
             _data = data;
-            view.Init(_data);
+            await view.AsyncInit(_data);
         }
 
         public async UniTask AsyncMoveCard(Vector3 newPos, Vector3 newRotation)
