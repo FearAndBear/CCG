@@ -1,12 +1,13 @@
 ﻿using System;
 using CCG.UI;
 using Cysharp.Threading.Tasks;
+using DragAndDrop;
 using UnityEngine;
 using Zenject;
 
 namespace CCG.Cards
 {
-    public class CardBase : MonoBehaviour
+    public class CardBase : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public event Action<CardBase> OnCardDestroy; 
         
@@ -20,10 +21,14 @@ namespace CCG.Cards
         private CardData _data;
 
         public CardData Data => _data;
+        public Transform DraggedTransform => transform;
+        public RectTransform RectTransform { get; private set; }
 
         private void Awake()
         {
             if (cardDataObject) UniTask.Create(() => Init(cardDataObject.CardData));
+
+            RectTransform = transform as RectTransform;
         }
 
         public async UniTask Init(CardData data)
@@ -75,6 +80,35 @@ namespace CCG.Cards
             await view.AsyncStartDestroyAnimation();
             OnCardDestroy?.Invoke(this);
             Destroy(gameObject);
+        }
+
+        public void OnBeginDrag(Vector3 screenPos)
+        {
+            Debug.Log("Begin drag");
+        }
+
+        public void OnDrag(Vector3 screenPos)
+        {
+            Debug.Log("Drag");
+
+            float distant = (screenPos - RectTransform.position).magnitude;
+            
+            RectTransform.position = Vector2.MoveTowards(RectTransform.position, screenPos, distant * 10 * Time.deltaTime);
+
+        }
+
+        public void OnEndDrag(Vector3 screenPos, bool dropIsSuccess)
+        {
+            if (!dropIsSuccess)
+            {
+                AsyncSetSelectState(false);
+            }
+            else
+            {
+                RectTransform.localPosition = Vector3.zero;
+            }
+            
+            Debug.Log("End drag");
         }
     }
 }

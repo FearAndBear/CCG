@@ -12,6 +12,7 @@ namespace Global
         public override void InstallBindings()
         {
             Container.Bind<HandContainer>().FromInstance(_handContainer).AsSingle();
+            Container.Bind<IInput>().FromInstance(new DesktopUIInput()).AsSingle();
         }
     }
 }
