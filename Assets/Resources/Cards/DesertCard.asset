@@ -16,5 +16,6 @@ MonoBehaviour:
     Cost: 3
     Health: 3
     Damage: 3
+    ImageURL: https://media.istockphoto.com/vectors/rocks-in-the-desert-orange-sunset-mountains-sand-beautiful-sky-vector-id1301830881
     Title: Desert
     Description: Hot, sun, sand...

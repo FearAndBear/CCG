@@ -5,6 +5,8 @@ namespace CCG.Cards
 {
     public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        [SerializeField] private CardBase targetCard;
+        
         public Transform DraggedTransform { get; }
 
         public RectTransform RectTransform { get; private set; }
@@ -31,14 +33,6 @@ namespace CCG.Cards
 
         public void OnEndDrag(Vector3 screenPos, bool dropIsSuccess)
         {
-            if (!dropIsSuccess)
-            {
-            }
-            else
-            {
-                RectTransform.localPosition = Vector3.zero;
-            }
-            
             Debug.Log("End drag");
         }
 

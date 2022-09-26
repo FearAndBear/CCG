@@ -16,6 +16,7 @@ MonoBehaviour:
     Cost: 2
     Health: 2
     Damage: 2
+    ImageURL: https://static.wikia.nocookie.net/hearthstone_gamepedia/images/c/c1/Alexstrasza_full.jpg
     Title: Alexstrasza
     Description: <u><size=120%>Battlecry:</size></u> Set a hero's remaining Health
       to 15

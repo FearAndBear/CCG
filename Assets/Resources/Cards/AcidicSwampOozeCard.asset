@@ -16,5 +16,6 @@ MonoBehaviour:
     Cost: 1
     Health: 1
     Damage: 1
+    ImageURL: https://static.wikia.nocookie.net/hearthstone_gamepedia/images/b/b4/Acidic_Swamp_Ooze_full.jpg
     Title: Acidic Swamp Ooze
     Description: <u><size=120%>Battlecry:</size></u> Destroy your opponent's weapon.

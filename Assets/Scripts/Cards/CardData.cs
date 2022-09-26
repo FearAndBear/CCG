@@ -10,12 +10,13 @@ namespace CCG.Cards
     [Serializable]
     public class CardData
     {
-        private const string URL = "https://loremflickr.com/640/360"; 
         
         [Header("Parameters")]
         public int Cost;
         public int Health;
         public int Damage;
+        [TextArea]
+        public string ImageURL = "https://loremflickr.com/640/360"; 
 
         [Header("Info")]
         public string Title;
@@ -24,18 +25,19 @@ namespace CCG.Cards
 
         private Sprite image;
 
-        public CardData(int cost, int health, int damage, string title, string description)
+        public CardData(int cost, int health, int damage, string imageURL, string title, string description)
         {
             Cost = cost;
             Health = health;
             Damage = damage;
+            ImageURL = imageURL;
             Title = title;
             Description = description;
         }
 
         public CardData Clone()
         {
-            return new CardData(Cost, Health, Damage, Title, Description);
+            return new CardData(Cost, Health, Damage, ImageURL, Title, Description);
         }
 
         public async UniTask<Sprite> GetSprite()
@@ -50,14 +52,15 @@ namespace CCG.Cards
 
         private async UniTask<Texture2D> LoadingSprite()
         {
-            var request = UnityWebRequestTexture.GetTexture(URL);
+            string targetURL = ImageURL;
+            var request = UnityWebRequestTexture.GetTexture(targetURL);
             var requestProcess = request.SendWebRequest();
 
             await UniTask.WaitWhile(() => !requestProcess.isDone);
 
             if (request.isNetworkError || request.isHttpError)
             {
-                Debug.LogError($"[{nameof(CardData)}] Can't loading image from {URL}!");
+                Debug.LogError($"[{nameof(CardData)}] Can't loading image from {targetURL}!");
                 return null;
             }
 

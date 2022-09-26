@@ -25,7 +25,7 @@ namespace Utils
         {
             await UniTask.Delay(500);
 
-            int handCardCounts = Random.Range(4, 7);
+            int handCardCounts = Random.Range(6, 7);
             List<UniTask> animations = new List<UniTask>();
             
             for (var i = 0; i < handCardCounts; i++)
@@ -35,7 +35,7 @@ namespace Utils
                 RectTransform rectTransform = newCard.transform as RectTransform;
                 rectTransform.anchoredPosition = new Vector2(1000, 100);
                 
-                await newCard.Init(cardDataObjects[Random.Range(0, cardDataObjects.Length)].CardData.Clone());
+                await newCard.Init(cardDataObjects[i].CardData.Clone());
 
                 animations.Add(_handContainer.AsyncAddCardToHand(newCard));
                 await UniTask.Delay(200);

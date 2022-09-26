@@ -16,5 +16,6 @@ MonoBehaviour:
     Cost: 4
     Health: 4
     Damage: 4
+    ImageURL: https://static.wikia.nocookie.net/hearthstone_gamepedia/images/a/a7/Millhouse_Manastorm_full.jpg
     Title: Millhouse Manastorm
     Description: <u><size=120%>Battlecry:</size></u> Enemy spells cost (0) next turn.

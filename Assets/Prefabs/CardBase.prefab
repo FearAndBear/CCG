@@ -1352,10 +1352,11 @@ GameObject:
   - component: {fileID: 8359150990356382901}
   - component: {fileID: 8412676894958934849}
   - component: {fileID: 4494954487391576854}
+  - component: {fileID: 4026923367461252999}
   - component: {fileID: 6922110242274898405}
   - component: {fileID: 4706809717541068931}
   m_Layer: 0
-  m_Name: CardView
+  m_Name: CardBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1403,6 +1404,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 6922110242274898405}
   cardDataObject: {fileID: 0}
+--- !u!114 &4026923367461252999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8359150990356382857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b35ef2140c94696b25ec3080a01a057, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCard: {fileID: 4494954487391576854}
 --- !u!114 &6922110242274898405
 MonoBehaviour:
   m_ObjectHideFlags: 0
